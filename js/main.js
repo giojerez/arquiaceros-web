@@ -74,11 +74,11 @@
   function startReveals() { document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el)); }
 
   // ---------- servicios → WhatsApp ----------
+  // Enlace real (no depende de ventanas emergentes): abre WhatsApp con el servicio.
   document.querySelectorAll('[data-wa-service]').forEach(a => {
-    a.addEventListener('click', e => {
-      e.preventDefault();
-      window.ARQ.openWA(`Hola Arquiaceros, quiero cotizar ${a.dataset.waService}. ¿Me pueden asesorar?`);
-    });
+    a.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hola Arquiaceros, quiero cotizar ${a.dataset.waService}. ¿Me pueden asesorar?`)}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
   });
 
   // ---------- formulario de constructores ----------
@@ -216,6 +216,77 @@
   track.scrollLeft = 1;
   coverflow();
   if (!reduced) requestAnimationFrame(tick);
+
+  // ---------- galerías de fotos: movimiento automático + scroll horizontal ----------
+  // Duplica las fotos para un bucle sin fin; el usuario puede desplazarlas con
+  // el dedo o el trackpad y el movimiento automático sigue desde donde quedó.
+  function galeriaInfinita(track, speed) {
+    const originales = [...track.children];
+    originales.forEach(fig => {
+      const copy = fig.cloneNode(true);
+      copy.setAttribute('aria-hidden', 'true');
+      copy.querySelector('button').tabIndex = -1;
+      track.appendChild(copy);
+    });
+    const ancho = () => track.children[originales.length].offsetLeft - track.children[0].offsetLeft;
+    track.addEventListener('scroll', () => {
+      const w = ancho();
+      if (track.scrollLeft >= w) track.scrollLeft -= w;
+      else if (track.scrollLeft <= 0) track.scrollLeft += w;
+    }, { passive: true });
+
+    let pos = 1, last = 0, visible = false, hovering = false, holdUntil = 0;
+    track.scrollLeft = 1;
+    track.addEventListener('mouseenter', () => { hovering = true; });
+    track.addEventListener('mouseleave', () => { hovering = false; });
+    ['pointerdown', 'wheel', 'touchstart'].forEach(ev => track.addEventListener(ev, () => { holdUntil = performance.now() + 3000; }, { passive: true }));
+    new IntersectionObserver(en => { visible = en[0].isIntersecting; }, { rootMargin: '100px 0px' }).observe(track);
+
+    // Arrastrar con el mouse para desplazar (en táctil y trackpad ya es nativo).
+    let dragX = null, dragStart = 0, dragged = false;
+    track.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragX = e.clientX; dragStart = track.scrollLeft; dragged = false;
+    });
+    window.addEventListener('pointermove', e => {
+      if (dragX === null) return;
+      const dx = e.clientX - dragX;
+      if (Math.abs(dx) > 5) { dragged = true; track.classList.add('is-dragging'); }
+      if (dragged) { track.scrollLeft = dragStart - dx; holdUntil = performance.now() + 3000; }
+    });
+    window.addEventListener('pointerup', () => { dragX = null; track.classList.remove('is-dragging'); });
+    // Si fue un arrastre, no abre la foto.
+    track.addEventListener('click', e => { if (dragged) { e.stopPropagation(); e.preventDefault(); dragged = false; } }, true);
+    track.addEventListener('dragstart', e => e.preventDefault());
+    if (reduced) return;
+    (function tick(now) {
+      const dt = Math.min(64, now - (last || now));
+      last = now;
+      if (visible && !hovering && !document.hidden && now > holdUntil) {
+        if (Math.abs(track.scrollLeft - pos) > 2) pos = track.scrollLeft;
+        pos += speed * dt / 1000;
+        if (pos >= ancho()) pos -= ancho();
+        track.scrollLeft = pos;
+      } else {
+        pos = track.scrollLeft;
+      }
+      requestAnimationFrame(tick);
+    })(performance.now());
+  }
+  galeriaInfinita(document.getElementById('mirrors-track'), 45);
+  galeriaInfinita(document.getElementById('obras-track'), 55);
+
+  // Ampliar cualquier foto de las galerías.
+  const lb = document.getElementById('lightbox');
+  const lbImg = lb.querySelector('img');
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-full]');
+    if (!b) return;
+    lbImg.src = b.dataset.full;
+    lbImg.alt = b.querySelector('img').alt;
+    lb.showModal();
+  });
+  lb.addEventListener('click', e => { if (e.target === lb || e.target.closest('.lightbox__close')) lb.close(); });
 
   // ---------- mapa (se carga al pedirlo o al acercarse) ----------
   const map = document.getElementById('map');

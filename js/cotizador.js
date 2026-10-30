@@ -1,19 +1,26 @@
 /* =====================================================================
    Cotizador de divisiones de baño — Arquiaceros
-   Precios en COP (mismos valores de la referencia). Para cambiar un precio,
-   edita solo el objeto PRECIOS. Es una sola división por cotización; la
+   Precios finales en COP. Para cambiar un precio, edita PRECIO_RECTA o el
+   objeto PRECIOS. Solo se fabrica en vidrio templado de 8 mm. Es una sola división por cotización; la
    selección se guarda en el navegador y se envía completa por WhatsApp.
    ===================================================================== */
 (function () {
   const root = document.getElementById('ctz');
   if (!root) return;
 
+  // Precio final de la división recta según el ancho, en pasos de 5 cm (cm → COP).
+  // Desde 0.85 m hasta 1.00 m se cobra como 1.00 m; el máximo cotizable es 1.70 m.
+  const PRECIO_RECTA = {
+    100: 465000, 105: 475000, 110: 485000, 115: 495000, 120: 505000,
+    125: 515000, 130: 525000, 135: 535000, 140: 545000, 145: 555000,
+    150: 565000, 155: 575000, 160: 585000, 165: 595000, 170: 605000
+  };
   const PRECIOS = {
-    base6mm: 600000, base8mm: 700000, recargoAnchoPorPaso: 50000,
+    recargoAnchoPorPaso: 50000,
     lCompacta: 970000, lBase: 1000000, lRecargo8mm: 200000,
     herrajeBatiente: 20000,
-    acabadoNegro: 50000, acabadoDorado: 80000, acabadoOroRosa: 80000,
-    toallero: 50000
+    acabadoNegro: 50000, acabadoDorado: 80000,
+    toallero: 20000
   };
 
   const TIPOS = {
@@ -21,14 +28,14 @@
     batiente: { forma: 'recta', nombre: 'Batiente' },
     esquinera: { forma: 'L', nombre: 'Esquinera L' }
   };
-  const ACABADOS = { inox: 'Acero inoxidable', negro: 'Negro mate', dorado: 'Dorado', oro_rosa: 'Oro rosa' };
-  const STORE_KEY = 'arquiaceros-cotizacion-v2';
+  const ACABADOS = { inox: 'Acero inoxidable', negro: 'Negro mate', dorado: 'Dorado' };
+  const STORE_KEY = 'arquiaceros-cotizacion-v3';
 
   const $ = id => document.getElementById(id);
   const fmt = n => '$' + Math.round(n).toLocaleString('es-CO');
   const cm = m => Math.round(m * 100);
 
-  const defaults = () => ({ tipo: null, ancho: 1, ladoA: 0.8, ladoB: 0.8, espesor: '6', acabado: 'inox', murito: 'no', toallero: false });
+  const defaults = () => ({ tipo: null, ancho: 1, ladoA: 0.8, ladoB: 0.8, espesor: '8', acabado: 'inox', murito: 'no', toallero: false });
   let state = { current: defaults(), client: {} };
 
   // ---------- precio ----------
@@ -39,10 +46,9 @@
     let costo = 0;
 
     if (!esL) {
-      costo = cfg.espesor === '8' ? P.base8mm : P.base6mm;
-      // Cada 20 cm por encima de 1.00 m (o fracción) suma un paso.
-      const extra = cm(cfg.ancho) - 100;
-      if (extra > 0) costo += Math.ceil(extra / 20) * P.recargoAnchoPorPaso;
+      // Se redondea hacia arriba al siguiente paso de 5 cm de la tabla.
+      const paso = Math.min(170, Math.max(100, Math.ceil(cm(cfg.ancho) / 5) * 5));
+      costo = PRECIO_RECTA[paso];
     } else {
       // Esquinera en L: estructura única; compacta si ambos lados ≤ 0.90 m.
       if (cm(cfg.ladoA) <= 90 && cm(cfg.ladoB) <= 90) {
@@ -52,7 +58,7 @@
         costo += Math.max(0, Math.floor((cm(cfg.ladoA) - 100) / 20)) * P.recargoAnchoPorPaso;
         costo += Math.max(0, Math.floor((cm(cfg.ladoB) - 100) / 20)) * P.recargoAnchoPorPaso;
       }
-      if (cfg.espesor === '8') costo += P.lRecargo8mm;
+      costo += P.lRecargo8mm;
     }
 
     if (cfg.tipo === 'batiente') costo += P.herrajeBatiente;
@@ -60,8 +66,7 @@
     const mult = esL ? 2 : 1; // la L lleva el doble de accesorios
     if (cfg.acabado === 'negro') costo += P.acabadoNegro * mult;
     else if (cfg.acabado === 'dorado') costo += P.acabadoDorado * mult;
-    else if (cfg.acabado === 'oro_rosa') costo += P.acabadoOroRosa * mult;
-    if (cfg.toallero) costo += P.toallero * mult;
+    if (cfg.toallero) costo += P.toallero;
 
     return costo;
   }
@@ -72,7 +77,7 @@
       : `${it.ancho.toFixed(2)} m`;
   }
   function linea(it, i) {
-    let l = `${i + 1}. División ${TIPOS[it.tipo].nombre} | Ancho: ${medidaTexto(it)} | Vidrio: ${it.espesor} mm | Herrajes: ${ACABADOS[it.acabado]} | Alto: ${it.murito === 'si' ? '1.80 m (con zócalo, muro o pollo)' : '1.90 m (a piso)'}`;
+    let l = `${i + 1}. División ${TIPOS[it.tipo].nombre} | Ancho: ${medidaTexto(it)} | Vidrio: ${it.espesor} mm | Herrajes: ${ACABADOS[it.acabado]} | Alto: 1.90 m | Zócalo, muro o pollo: ${it.murito === 'si' ? 'Sí' : 'No'}`;
     if (it.toallero) l += ' | + Toallero';
     return l;
   }
@@ -99,7 +104,6 @@
     const c = state.current;
     root.querySelectorAll('input[name="tipo"]').forEach(r => { r.checked = r.value === c.tipo; });
     root.querySelectorAll('.type').forEach(l => l.classList.toggle('is-active', l.dataset.type === c.tipo));
-    root.querySelector(`input[name="espesor"][value="${c.espesor}"]`).checked = true;
     root.querySelector(`input[name="acabado"][value="${c.acabado}"]`).checked = true;
     root.querySelector(`input[name="murito"][value="${c.murito}"]`).checked = true;
     $('toallero').checked = c.toallero;
@@ -121,18 +125,11 @@
       el.style.setProperty('--p', ((c[k] - el.min) / (el.max - el.min) * 100) + '%');
     });
 
-    // batiente solo 6 mm
-    const op8 = root.querySelector('input[name="espesor"][value="8"]');
-    op8.disabled = c.tipo === 'batiente';
-    $('note-6mm').classList.toggle('hidden', c.tipo !== 'batiente');
-
     // etiquetas de extras (en L se duplican)
     const m = esL ? 2 : 1;
     root.querySelector('[data-extra="negro"]').textContent = '+ ' + fmt(PRECIOS.acabadoNegro * m);
     root.querySelector('[data-extra="dorado"]').textContent = '+ ' + fmt(PRECIOS.acabadoDorado * m);
-    root.querySelector('[data-extra="oro_rosa"]').textContent = '+ ' + fmt(PRECIOS.acabadoOroRosa * m);
-    $('lbl-toallero').textContent = '+ ' + fmt(PRECIOS.toallero * m);
-    $('lbl-8mm').textContent = esL ? `Línea pesada (+ ${fmt(PRECIOS.lRecargo8mm)})` : 'Línea pesada / alta gama';
+    $('lbl-toallero').textContent = '+ ' + fmt(PRECIOS.toallero);
 
     // vista previa
     const pv = $('preview');
@@ -143,7 +140,7 @@
     $('preview-title').textContent = c.tipo ? TIPOS[c.tipo].nombre : 'Elige un tipo';
     $('dim-text').textContent = c.tipo ? medidaTexto(c) : '—';
     $('preview-tags').innerHTML = c.tipo
-      ? [`${c.espesor} mm`, ACABADOS[c.acabado], c.murito === 'si' ? 'Alto 1.80 m' : 'Alto 1.90 m', c.toallero ? 'Toallero' : '']
+      ? [`${c.espesor} mm`, ACABADOS[c.acabado], 'Alto 1.90 m', c.murito === 'si' ? 'Con zócalo' : '', c.toallero ? 'Toallero' : '']
           .filter(Boolean).map(t => `<span>${t}</span>`).join('')
       : '';
 
@@ -155,7 +152,7 @@
     $('order-list').innerHTML = c.tipo
       ? `<li class="order__item is-current">
           <div><b>División ${TIPOS[c.tipo].nombre}</b>
-          <p>Ancho ${medidaTexto(c)} · ${c.espesor} mm · ${ACABADOS[c.acabado]} · Alto ${c.murito === 'si' ? '1.80' : '1.90'} m${c.toallero ? ' · Toallero' : ''}</p></div>
+          <p>Ancho ${medidaTexto(c)} · ${c.espesor} mm · ${ACABADOS[c.acabado]} · Alto 1.90 m${c.murito === 'si' ? ' · Con zócalo, muro o pollo' : ''}${c.toallero ? ' · Toallero' : ''}</p></div>
           <span class="price">${fmt(p)}</span>
         </li>`
       : '<li class="order__empty">Elige el tipo de división arriba y aparecerá aquí, con su precio.</li>';
@@ -177,7 +174,9 @@
     try {
       const s = JSON.parse(localStorage.getItem(STORE_KEY));
       if (s && s.current) {
-        state.current = Object.assign(defaults(), s.current);
+        state.current = Object.assign(defaults(), s.current, { espesor: '8' });
+        if (!ACABADOS[state.current.acabado]) state.current.acabado = 'inox';
+        state.current.ancho = Math.min(1.7, Math.max(0.85, Number(state.current.ancho) || 1));
         state.client = s.client || {};
         if (state.current.tipo && !TIPOS[state.current.tipo]) state.current.tipo = null;
       }
@@ -189,15 +188,9 @@
     const t = e.target, c = state.current;
     if (t.name === 'tipo') {
       c.tipo = t.value;
-      if (c.tipo === 'batiente' && c.espesor === '8') {
-        c.espesor = '6';
-        root.querySelector('input[name="espesor"][value="6"]').checked = true;
-        window.ARQ.toast('La batiente se fabrica en 6 mm: ajustamos el vidrio por ti.');
-      }
       root.querySelectorAll('.type').forEach(l => l.classList.toggle('is-active', l.dataset.type === c.tipo));
       bump();
-    } else if (t.name === 'espesor') c.espesor = t.value;
-    else if (t.name === 'acabado') c.acabado = t.value;
+    } else if (t.name === 'acabado') c.acabado = t.value;
     else if (t.name === 'murito') c.murito = t.value;
     else if (t.id === 'toallero') c.toallero = t.checked;
     else return;

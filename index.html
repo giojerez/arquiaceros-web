@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap">
   <link rel="preload" as="image" href="img/logo-mark.webp">
   <link rel="preload" as="image" href="img/division-bano-esquinera.webp" fetchpriority="high">
-  <link rel="stylesheet" href="css/styles.css?v=4">
+  <link rel="stylesheet" href="css/styles.css?v=11">
 
   <script type="application/ld+json">
   {
@@ -67,7 +67,8 @@
       {"@type": "Question", "name": "¿El precio del cotizador es el precio final?", "acceptedAnswer": {"@type": "Answer", "text": "Es un precio de referencia calculado con tus medidas. Un asesor de Arquiaceros lo confirma por WhatsApp y, si es necesario, agenda una visita de medición."}},
       {"@type": "Question", "name": "¿En qué zonas instalan?", "acceptedAnswer": {"@type": "Answer", "text": "Bucaramanga y su área metropolitana: Floridablanca, Girón y Piedecuesta."}},
       {"@type": "Question", "name": "¿Venden al por mayor?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Fabricamos y distribuimos al detal y al por mayor, con condiciones especiales para constructoras y contratistas."}},
-      {"@type": "Question", "name": "¿Qué vidrio usan en las divisiones de baño?", "acceptedAnswer": {"@type": "Answer", "text": "Vidrio templado de seguridad de 6 mm u 8 mm, con herrajes en acero inoxidable o acabados negro mate, dorado y oro rosa."}}
+      {"@type": "Question", "name": "¿Qué vidrio usan en las divisiones de baño?", "acceptedAnswer": {"@type": "Answer", "text": "Vidrio templado de seguridad de 8 mm, con herrajes en acero inoxidable o acabados negro mate y dorado."}},
+      {"@type": "Question", "name": "¿Por qué es mejor el vidrio templado de 8 mm?", "acceptedAnswer": {"@type": "Answer", "text": "Es más grueso y rígido: no vibra, soporta mejor los golpes y el uso diario, y si llega a romperse se fragmenta en trozos pequeños sin filo."}}
     ]
   }
   </script>
@@ -98,6 +99,7 @@
     <nav class="nav" id="nav" aria-label="Principal">
       <a href="#cotizador">Cotizador</a>
       <a href="#servicios">Servicios</a>
+      <a href="#espejos">Espejos</a>
       <a href="#proyectos">Proyectos</a>
       <a href="#constructores">Constructores</a>
       <a href="#contacto">Contacto</a>
@@ -198,8 +200,9 @@
               <div class="range__top"><span>Ancho de baño</span>
                 <div class="stepper"><button type="button" data-step="ancho:-1" aria-label="Restar 1 cm">−</button><output id="out-ancho">1.00 m</output><button type="button" data-step="ancho:1" aria-label="Sumar 1 cm">+</button></div>
               </div>
-              <input type="range" id="ancho" min="0.5" max="3" step="0.01" value="1" aria-label="Ancho del vano en metros">
-              <div class="range__scale"><span>0.50 m</span><span>3.00 m</span></div>
+              <input type="range" id="ancho" min="0.85" max="1.7" step="0.01" value="1" aria-label="Ancho del baño en metros">
+              <div class="range__scale"><span>0.85 m</span><span>1.70 m</span></div>
+              <p class="range__more">¿Tu baño mide más de 1.70 m? <a href="#" data-wa-service="una división de baño de más de 1.70 m de ancho">Cotízala por WhatsApp</a></p>
             </div>
             <div class="range-l hidden" id="range-l">
               <div class="range">
@@ -223,11 +226,9 @@
 
           <fieldset class="ctz__block">
             <legend><span class="num">03</span> Grosor del vidrio</legend>
-            <div class="pills" role="radiogroup">
-              <label class="pill"><input type="radio" name="espesor" value="6" checked><span><b>6 mm</b> Templado de seguridad</span></label>
-              <label class="pill"><input type="radio" name="espesor" value="8"><span><b>8 mm</b> <em id="lbl-8mm">Línea pesada / alta gama</em></span></label>
+            <div class="pills pills--one">
+              <label class="pill"><input type="radio" name="espesor" value="8" checked><span><b>8 mm</b> Vidrio templado de seguridad · línea Premium</span></label>
             </div>
-            <p class="ctz__note hidden" id="note-6mm">La puerta batiente se fabrica solo en 6 mm por el torque de sus herrajes.</p>
           </fieldset>
 
           <fieldset class="ctz__block">
@@ -236,7 +237,6 @@
               <label class="swatch"><input type="radio" name="acabado" value="inox" checked><i class="sw sw--inox"></i><span>Acero inoxidable</span><small>Incluido</small></label>
               <label class="swatch"><input type="radio" name="acabado" value="negro"><i class="sw sw--negro"></i><span>Negro mate</span><small data-extra="negro">+ $50.000</small></label>
               <label class="swatch"><input type="radio" name="acabado" value="dorado"><i class="sw sw--dorado"></i><span>Dorado</span><small data-extra="dorado">+ $80.000</small></label>
-              <label class="swatch"><input type="radio" name="acabado" value="oro_rosa"><i class="sw sw--rosa"></i><span>Oro rosa</span><small data-extra="oro_rosa">+ $80.000</small></label>
             </div>
           </fieldset>
 
@@ -244,14 +244,14 @@
             <div>
               <legend><span class="num">05</span> ¿Tu ducha tiene zócalo, muro o pollo?</legend>
               <div class="pills pills--sm" role="radiogroup">
-                <label class="pill"><input type="radio" name="murito" value="no" checked><span>No, a piso <em>(alto 1.90 m)</em></span></label>
-                <label class="pill"><input type="radio" name="murito" value="si"><span>Sí, tiene <em>(alto 1.80 m)</em></span></label>
+                <label class="pill"><input type="radio" name="murito" value="no" checked><span>No, a piso</span></label>
+                <label class="pill"><input type="radio" name="murito" value="si"><span>Sí, tiene</span></label>
               </div>
             </div>
             <label class="toggle">
               <input type="checkbox" id="toallero">
               <span class="toggle__ui"></span>
-              <span>Toallero acero inox <small id="lbl-toallero">+ $50.000</small></span>
+              <span>Toallero acero inox <small id="lbl-toallero">+ $20.000</small></span>
             </label>
           </fieldset>
         </div>
@@ -364,6 +364,68 @@
   </div>
 </section>
 
+<!-- ============ ESPEJOS ============ -->
+<section class="section espejos" id="espejos">
+  <div class="espejos__bg" aria-hidden="true"></div>
+  <div class="container espejos__head">
+    <div class="reveal">
+      <p class="eyebrow eyebrow--ink">Espejos con luz LED</p>
+      <h2>Espejos que <span class="t-ink">iluminan</span> tu espacio</h2>
+      <p class="espejos__lead">Espejos biselados con luz indirecta y encendido táctil, fabricados a la medida para baños, salas, habitaciones, recibidores y pasillos.</p>
+    </div>
+    <div class="espejos__side reveal">
+      <a href="https://wa.me/573183696948?text=Hola%20Arquiaceros%2C%20quiero%20cotizar%20un%20espejo%20con%20luz%20LED." class="btn btn--dark" target="_blank" rel="noopener" data-wa-service="un espejo con luz LED">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg> Cotizar mi espejo
+      </a>
+    </div>
+  </div>
+  <div class="mirrors reveal" id="mirrors">
+    <div class="mirrors__track" id="mirrors-track">
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-led-media-luna-bano.webp" aria-label="Ampliar: Espejo LED media luna con luz indirecta y encendido táctil en baño">
+            <img src="img/espejo-led-media-luna-bano.webp" alt="Espejo LED media luna con luz indirecta y encendido táctil en baño" width="640" height="853" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Baño · media luna LED</figcaption>
+        </figure>
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-redondo-luz-indirecta-recibidor.webp" aria-label="Ampliar: Espejo redondo biselado con luz indirecta cálida en recibidor">
+            <img src="img/espejo-redondo-luz-indirecta-recibidor.webp" alt="Espejo redondo biselado con luz indirecta cálida en recibidor" width="640" height="872" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Recibidor · luz cálida</figcaption>
+        </figure>
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-led-rectangular-bano.webp" aria-label="Ampliar: Espejo rectangular con marco de luz LED y botón táctil para baño">
+            <img src="img/espejo-led-rectangular-bano.webp" alt="Espejo rectangular con marco de luz LED y botón táctil para baño" width="640" height="853" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Baño · marco LED</figcaption>
+        </figure>
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-circular-led-pasillo.webp" aria-label="Ampliar: Espejo circular con luz indirecta sobre pared de listones en pasillo">
+            <img src="img/espejo-circular-led-pasillo.webp" alt="Espejo circular con luz indirecta sobre pared de listones en pasillo" width="640" height="853" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Pasillo · luz indirecta</figcaption>
+        </figure>
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-led-media-luna-habitacion.webp" aria-label="Ampliar: Espejo LED media luna de cuerpo entero con luz fría en habitación">
+            <img src="img/espejo-led-media-luna-habitacion.webp" alt="Espejo LED media luna de cuerpo entero con luz fría en habitación" width="640" height="853" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Habitación · cuerpo entero</figcaption>
+        </figure>
+        <figure class="mirror">
+          <button type="button" class="mirror__btn" data-full="img/espejo-reticula-marco-negro.webp" aria-label="Ampliar: Espejo en retícula con marco negro para sala y comedor">
+            <img src="img/espejo-reticula-marco-negro.webp" alt="Espejo en retícula con marco negro para sala y comedor" width="640" height="853" loading="lazy" decoding="async">
+          </button>
+          <figcaption>Sala · retícula negra</figcaption>
+        </figure>
+    </div>
+  </div>
+</section>
+
+<dialog class="lightbox" id="lightbox" aria-label="Imagen ampliada">
+  <button type="button" class="lightbox__close" aria-label="Cerrar">×</button>
+  <img src="" alt="">
+</dialog>
+
 <!-- ============ SERVICIOS ============ -->
 <section class="section section--light servicios" id="servicios">
   <div class="container">
@@ -379,7 +441,7 @@
         <div class="svc__body">
           <span class="svc__tag">Servicio principal</span>
           <h3>Divisiones de baño</h3>
-          <p>Corredizas, batientes y esquineras en vidrio templado de 6 y 8 mm. Herrajes en inoxidable, negro mate, dorado u oro rosa.</p>
+          <p>Corredizas, batientes y esquineras en vidrio templado de 8 mm. Herrajes en inoxidable, negro mate o dorado.</p>
           <a href="#" class="svc__link" data-wa-service="Divisiones de baño">Cotizar en línea →</a>
         </div>
       </article>
@@ -519,6 +581,92 @@
   </div>
 </section>
 
+<!-- ============ GALERÍA DE OBRAS ============ -->
+<section class="section section--dark galeria" id="galeria">
+  <div class="container">
+    <header class="section__head reveal">
+      <p class="eyebrow">Galería</p>
+      <h2>Nuestras <span class="t-gold">obras</span></h2>
+    </header>
+  </div>
+  <div class="obras reveal">
+    <div class="obras__track" id="obras-track">
+      <figure class="obra" style="--ar: 540 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/fachada-balcones-vidrio-acero.webp" aria-label="Ampliar: Fachada con balcones en vidrio templado y barandas en acero inoxidable">
+          <img src="img/obras/fachada-balcones-vidrio-acero.webp" alt="Fachada con balcones en vidrio templado y barandas en acero inoxidable" width="540" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Balcones en vidrio</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 960 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/baranda-acero-inoxidable-mezanine.webp" aria-label="Ampliar: Barandas en acero inoxidable para escalera y mezanine">
+          <img src="img/obras/baranda-acero-inoxidable-mezanine.webp" alt="Barandas en acero inoxidable para escalera y mezanine" width="960" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Barandas en acero</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 543 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/escalera-baranda-vidrio-perfil-negro.webp" aria-label="Ampliar: Escalera con baranda en vidrio templado y perfiles negros">
+          <img src="img/obras/escalera-baranda-vidrio-perfil-negro.webp" alt="Escalera con baranda en vidrio templado y perfiles negros" width="543" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Vidrio y perfil negro</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 1280 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/baranda-vidrio-piscina-mirador.webp" aria-label="Ampliar: Baranda en vidrio templado y acero alrededor de piscina con vista">
+          <img src="img/obras/baranda-vidrio-piscina-mirador.webp" alt="Baranda en vidrio templado y acero alrededor de piscina con vista" width="1280" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Piscina con vidrio</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 540 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/fachada-ventaneria-aluminio-casa.webp" aria-label="Ampliar: Fachada de casa con ventanería en aluminio y vidrio">
+          <img src="img/obras/fachada-ventaneria-aluminio-casa.webp" alt="Fachada de casa con ventanería en aluminio y vidrio" width="540" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Ventanería</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 540 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/escalera-curva-pasamanos-acero.webp" aria-label="Ampliar: Escalera curva con pasamanos en acero inoxidable">
+          <img src="img/obras/escalera-curva-pasamanos-acero.webp" alt="Escalera curva con pasamanos en acero inoxidable" width="540" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Escalera curva</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 960 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/balcon-baranda-vidrio-acero-inox.webp" aria-label="Ampliar: Balcón con baranda en vidrio templado y pasamanos en acero inoxidable">
+          <img src="img/obras/balcon-baranda-vidrio-acero-inox.webp" alt="Balcón con baranda en vidrio templado y pasamanos en acero inoxidable" width="960" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Balcón en vidrio</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 540 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/fachada-local-comercial-vidrio-templado.webp" aria-label="Ampliar: Fachada de local comercial en vidrio templado con puertas">
+          <img src="img/obras/fachada-local-comercial-vidrio-templado.webp" alt="Fachada de local comercial en vidrio templado con puertas" width="540" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Local comercial</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 960 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/baranda-vidrio-escalera-interior.webp" aria-label="Ampliar: Baranda en vidrio templado para escalera interior">
+          <img src="img/obras/baranda-vidrio-escalera-interior.webp" alt="Baranda en vidrio templado para escalera interior" width="960" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Escalera interior</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 960 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/division-oficina-vidrio-esmerilado.webp" aria-label="Ampliar: División de oficina en vidrio con película esmerilada">
+          <img src="img/obras/division-oficina-vidrio-esmerilado.webp" alt="División de oficina en vidrio con película esmerilada" width="960" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Oficina</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 540 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/fachada-ventaneria-casa-ladrillo.webp" aria-label="Ampliar: Fachada en ladrillo con ventanería en aluminio">
+          <img src="img/obras/fachada-ventaneria-casa-ladrillo.webp" alt="Fachada en ladrillo con ventanería en aluminio" width="540" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Fachada</figcaption>
+      </figure>
+      <figure class="obra" style="--ar: 1280 / 720">
+        <button type="button" class="obra__btn" data-full="img/obras/baranda-acero-piscina-campestre.webp" aria-label="Ampliar: Baranda en acero inoxidable en piscina campestre">
+          <img src="img/obras/baranda-acero-piscina-campestre.webp" alt="Baranda en acero inoxidable en piscina campestre" width="1280" height="720" loading="lazy" decoding="async">
+        </button>
+        <figcaption>Piscina campestre</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <!-- ============ FAQ ============ -->
 <section class="section section--light faq">
   <div class="container container--narrow">
@@ -530,8 +678,8 @@
       <details class="reveal"><summary>¿El precio del cotizador es el precio final?</summary><p>Es un precio de referencia calculado con tus medidas. Un asesor de Arquiaceros lo confirma por WhatsApp y, si es necesario, agenda una visita de medición.</p></details>
       <details class="reveal"><summary>¿En qué zonas instalan?</summary><p>Bucaramanga y su área metropolitana: Floridablanca, Girón y Piedecuesta. Para otros municipios de Santander escríbenos y lo coordinamos.</p></details>
       <details class="reveal"><summary>¿Venden al por mayor?</summary><p>Sí. Fabricamos y distribuimos al detal y al por mayor, con condiciones especiales para constructoras, contratistas e instaladores.</p></details>
-      <details class="reveal"><summary>¿Qué vidrio usan en las divisiones de baño?</summary><p>Vidrio templado de seguridad de 6 mm u 8 mm, con herrajes en acero inoxidable o acabados negro mate, dorado y oro rosa.</p></details>
-      <details class="reveal"><summary>¿Por qué la batiente solo se hace en 6 mm?</summary><p>Por el torque que soportan las bisagras: con 6 mm la puerta abre y cierra con seguridad durante muchos años.</p></details>
+      <details class="reveal"><summary>¿Qué vidrio usan en las divisiones de baño?</summary><p>Vidrio templado de seguridad de 8 mm, con herrajes en acero inoxidable o acabados negro mate y dorado.</p></details>
+      <details class="reveal"><summary>¿Por qué es mejor el vidrio templado de 8 mm?</summary><p>Es más grueso y rígido: no vibra al abrir y cerrar, se siente más sólido y soporta mejor los golpes y el uso diario. Al ser templado es hasta 5 veces más resistente que un vidrio común y, si llega a romperse, se fragmenta en trozos pequeños sin filo. Además aísla mejor el agua y el vapor y da un acabado de alta gama.</p></details>
     </div>
   </div>
 </section>
@@ -579,7 +727,7 @@
   <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.48.71.31 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35M12.05 21.5h-.01a9.4 9.4 0 0 1-4.8-1.32l-.34-.2-3.57.94.95-3.48-.22-.36a9.4 9.4 0 0 1-1.44-5.02c0-5.2 4.24-9.44 9.45-9.44 2.52 0 4.89.99 6.67 2.77a9.37 9.37 0 0 1 2.76 6.68c0 5.2-4.24 9.43-9.45 9.43m8.04-17.47A11.3 11.3 0 0 0 12.05.7C5.78.7.68 5.8.68 12.06c0 2 .52 3.96 1.52 5.68L.58 23.7l6.1-1.6a11.33 11.33 0 0 0 5.37 1.37h.01c6.26 0 11.36-5.1 11.37-11.37 0-3.03-1.18-5.89-3.33-8.03"/></symbol>
 </svg>
 
-<script src="js/main.js?v=3" defer></script>
-<script src="js/cotizador.js?v=3" defer></script>
+<script src="js/main.js?v=11" defer></script>
+<script src="js/cotizador.js?v=11" defer></script>
 </body>
 </html>
